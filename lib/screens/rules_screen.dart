@@ -203,7 +203,7 @@ class _RulesScreenState extends State<RulesScreen> {
               context,
               Icons.account_balance_wallet,
               'Token System',
-              '1 token = UGX 100. Each bid costs 1 token.',
+              '1 token = 100 UGX. Each bid costs 1 token.',
             ),
             _buildInfoItem(
               context,
@@ -227,7 +227,7 @@ class _RulesScreenState extends State<RulesScreen> {
               context,
               Icons.attach_money,
               'Top-up',
-              'Request token top-up through the wallet section. Admin approval required.',
+              'Recharge tokens through the wallet, and use them to bid.',
             ),
           ],
         ),

@@ -547,7 +547,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'UGX ${walletProvider.equivalentAmount.toStringAsFixed(0)}',
+                        '${walletProvider.equivalentAmount.toStringAsFixed(0)} UGX',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -583,7 +583,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '= UGX 100',
+                          'costs 100 UGX',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -605,7 +605,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Min Refill',
+                          'Minimum Refill',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.white.withOpacity(0.7),
                             fontSize: 10,
@@ -613,7 +613,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'UGX 500',
+                          '500 UGX',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -737,7 +737,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     ),
                     const SizedBox(height: 4),
                                          Text(
-                       '• Minimum top-up: UGX 500 (5 tokens)\n• 1 token = UGX 100\n• Payment via mobile money\n• Enter phone number as 07XXXXXXXX (exactly 10 digits)',
+                       '• Minimum top-up: UGX 500 (5 tokens)\n• 1 token = 100 UGX\n• Payment via mobile money\n• Enter phone number as 07XXXXXXXX (exactly 10 digits)',
                        style: TextStyle(
                          fontSize: 12,
                          color: Colors.blue[600],
@@ -1303,7 +1303,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '• Minimum refill: UGX 500 (5 tokens)\n• 1 token = UGX 100\n• Payment via mobile money\n• Enter phone number as 07XXXXXXXX (exactly 10 digits)',
+                  '• Minimum refill: UGX 500 (5 tokens)\n• 1 token = 100 UGX\n• Payment via mobile money\n• Enter phone number as 07XXXXXXXX (exactly 10 digits)',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.blue[600],

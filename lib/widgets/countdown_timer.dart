@@ -96,7 +96,7 @@ class _CountdownTimerState extends State<CountdownTimer> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final prefix = widget.isLive ? 'Ends in: ' : 'Starting in: ';
+    final prefix = widget.isLive ? '' : 'Starting in: ';
     final timeText = _isExpired ? 'Expired' : _formatDuration(_remaining);
     
     // Determine color and urgency based on time remaining
