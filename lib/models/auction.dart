@@ -10,6 +10,8 @@ class Auction {
   final double startingPrice;
   final bool isCompleted;
   final int? winnerId;
+  final String? winnerName;
+  final String? winnerPhone;
   final String createdAt;
   
   // Formatted fields from API
@@ -34,6 +36,8 @@ class Auction {
     required this.startingPrice,
     required this.isCompleted,
     this.winnerId,
+    this.winnerName,
+    this.winnerPhone,
     required this.createdAt,
     this.startingPriceFormatted,
     this.startTimeFormatted,
@@ -58,6 +62,8 @@ class Auction {
       startingPrice: (json['starting_price'] ?? 0).toDouble(),
       isCompleted: json['is_completed'] == 1 || json['is_completed'] == true,
       winnerId: json['winner_id'] != null ? int.tryParse(json['winner_id'].toString()) : null,
+      winnerName: json['winner_name'],
+      winnerPhone: json['winner_phone'],
       createdAt: json['created_at'] ?? '',
       startingPriceFormatted: json['starting_price_formatted'],
       startTimeFormatted: json['start_time_formatted'],
@@ -85,6 +91,8 @@ class Auction {
       'starting_price': startingPrice,
       'is_completed': isCompleted,
       'winner_id': winnerId,
+      'winner_name': winnerName,
+      'winner_phone': winnerPhone,
       'created_at': createdAt,
       'starting_price_formatted': startingPriceFormatted,
       'start_time_formatted': startTimeFormatted,

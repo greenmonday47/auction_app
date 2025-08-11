@@ -5,10 +5,12 @@ import 'providers/auction_provider.dart';
 import 'providers/wallet_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
+import 'screens/main_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/wallet_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/rules_screen.dart';
+import 'screens/history_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => WalletProvider()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Auction App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -58,10 +61,11 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
-          '/home': (context) => const HomeScreen(),
+          '/home': (context) => const MainScreen(),
           '/wallet': (context) => const WalletScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/rules': (context) => const RulesScreen(),
+          '/bid-history': (context) => const HistoryScreen(),
         },
       ),
     );
@@ -105,14 +109,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
       );
     }
 
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        if (authProvider.isAuthenticated) {
-          return const HomeScreen();
-        } else {
-          return const LoginScreen();
-        }
-      },
-    );
+          return Consumer<AuthProvider>(
+        builder: (context, authProvider, child) {
+          if (authProvider.isAuthenticated) {
+            return const MainScreen();
+          } else {
+            return const LoginScreen();
+          }
+        },
+      );
   }
 }

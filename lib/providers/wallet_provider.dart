@@ -77,7 +77,7 @@ class WalletProvider extends ChangeNotifier {
     }
   }
 
-  // Top up wallet
+  // Top up wallet (legacy method - now handled by payment gateway)
   Future<bool> topUp({
     required double amount,
     String? note,
@@ -106,6 +106,50 @@ class WalletProvider extends ChangeNotifier {
     } catch (e) {
       _setError('Failed to top up: ${e.toString()}');
       return false;
+    }
+  }
+
+  // Initialize payment for top-up
+  Future<Map<String, dynamic>> initializePayment({
+    required int userId,
+    required double amount,
+    required String phone,
+  }) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      final response = await _apiService.initializeTopUp(
+        userId: userId,
+        amount: amount,
+        phone: phone,
+      );
+
+      _setLoading(false);
+      return response;
+    } catch (e) {
+      _setError('Failed to initialize payment: ${e.toString()}');
+      return {
+        'success': false,
+        'message': 'Failed to initialize payment: ${e.toString()}',
+      };
+    }
+  }
+
+  // Verify payment status
+  Future<Map<String, dynamic>> verifyPayment({
+    required String transactionId,
+  }) async {
+    try {
+      final response = await _apiService.verifyPayment(
+        transactionId: transactionId,
+      );
+      return response;
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Failed to verify payment: ${e.toString()}',
+      };
     }
   }
 

@@ -28,7 +28,7 @@ class Bid {
       id: int.tryParse(json['id'].toString()) ?? 0,
       auctionId: int.tryParse(json['auction_id'].toString()) ?? 0,
       userId: int.tryParse(json['user_id'].toString()) ?? 0,
-      amount: (json['amount'] ?? 0).toDouble(),
+      amount: double.tryParse(json['amount']?.toString() ?? '0') ?? 0.0,
       tokensUsed: int.tryParse(json['tokens_used'].toString()) ?? 0,
       createdAt: json['created_at'] ?? '',
       userName: json['user_name'],

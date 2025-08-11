@@ -53,10 +53,28 @@ class ApiService {
       print('Making POST request to: ${ApiConfig.getUrl(endpoint)}');
       print('Data: $data');
       
+      // Convert data to form format
+      Map<String, String> formData = {};
+      if (data != null) {
+        data.forEach((key, value) {
+          formData[key] = value.toString();
+        });
+      }
+      
+      print('Form data: $formData');
+      print('Body: ${formData.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&')}');
+      
       final response = await http.post(
         Uri.parse(ApiConfig.getUrl(endpoint)),
-        headers: token != null ? getAuthHeaders(token) : _headers,
-        body: data != null ? jsonEncode(data) : null,
+        headers: token != null ? {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        } : {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        },
+        body: formData.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&'),
       ).timeout(Duration(seconds: 10));
 
       print('Response status: ${response.statusCode}');
@@ -187,6 +205,36 @@ class ApiService {
 
   Future<Map<String, dynamic>> getTransactions(String token) async {
     return get(ApiConfig.transactions, token: token);
+  }
+
+  // Payment methods
+  Future<Map<String, dynamic>> initializeTopUp({
+    required int userId,
+    required double amount,
+    required String phone,
+  }) async {
+    return post(
+      ApiConfig.initializeTopUp,
+      data: {
+        'user_id': userId,
+        'amount': amount,
+        'phone': phone,
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> verifyPayment({
+    required String transactionId,
+  }) async {
+    return get(ApiConfig.verifyPayment + '/$transactionId');
+  }
+
+  Future<Map<String, dynamic>> getPaymentHistory(String token) async {
+    return get(ApiConfig.paymentHistory, token: token);
+  }
+
+  Future<Map<String, dynamic>> getWalletStats() async {
+    return get(ApiConfig.walletStats);
   }
 
   // User methods

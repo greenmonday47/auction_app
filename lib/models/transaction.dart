@@ -54,6 +54,7 @@ class Transaction {
       case 'approved':
         return TransactionStatus.approved;
       case 'rejected':
+      case 'failed':
         return TransactionStatus.rejected;
       case 'pending':
       default:
