@@ -1,0 +1,445 @@
+{
+  "project_name": "Auction App FCM Implementation Plan",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Messaging implementation plan for outbid notifications",
+  "created_date": "2024-12-19",
+  "implementation_phases": [
+    {
+      "phase": 1,
+      "name": "Basic Setup",
+      "description": "Initial FCM configuration and dependencies",
+      "tasks": [
+        "Add FCM dependencies to pubspec.yaml",
+        "Configure Firebase project",
+        "Create FCM service",
+        "Update auth provider to register tokens"
+      ],
+      "estimated_duration": "2-3 days"
+    },
+    {
+      "phase": 2,
+      "name": "Backend Integration",
+      "description": "Server-side notification logic and API endpoints",
+      "tasks": [
+        "Add FCM token management endpoints",
+        "Implement outbid detection logic",
+        "Create notification sending service",
+        "Test with sample notifications"
+      ],
+      "estimated_duration": "3-4 days"
+    },
+    {
+      "phase": 3,
+      "name": "UI Implementation",
+      "description": "User interface for notification management",
+      "tasks": [
+        "Create notification settings screen",
+        "Add notification history screen",
+        "Update main screen with notification indicators",
+        "Implement local notification display"
+      ],
+      "estimated_duration": "2-3 days"
+    },
+    {
+      "phase": 4,
+      "name": "Testing & Optimization",
+      "description": "Comprehensive testing and performance optimization",
+      "tasks": [
+        "Test on both Android and iOS",
+        "Test background/foreground scenarios",
+        "Optimize notification timing",
+        "Add notification analytics"
+      ],
+      "estimated_duration": "2-3 days"
+    }
+  ],
+  "dependencies": {
+    "flutter_packages": [
+      {
+        "name": "firebase_core",
+        "version": "^2.24.2",
+        "description": "Firebase core functionality"
+      },
+      {
+        "name": "firebase_messaging",
+        "version": "^14.7.10",
+        "description": "Firebase Cloud Messaging"
+      },
+      {
+        "name": "flutter_local_notifications",
+        "version": "^16.3.2",
+        "description": "Local notification display"
+      },
+      {
+        "name": "workmanager",
+        "version": "^0.5.2",
+        "description": "Background task handling"
+      }
+    ]
+  },
+  "backend_requirements": {
+    "database_schema": {
+      "table_name": "user_fcm_tokens",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INT",
+          "constraints": "PRIMARY KEY AUTO_INCREMENT"
+        },
+        {
+          "name": "user_id",
+          "type": "INT",
+          "constraints": "NOT NULL, FOREIGN KEY REFERENCES users(id)"
+        },
+        {
+          "name": "fcm_token",
+          "type": "VARCHAR(255)",
+          "constraints": "NOT NULL"
+        },
+        {
+          "name": "device_type",
+          "type": "ENUM('android', 'ios', 'web')",
+          "constraints": "DEFAULT 'android'"
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "constraints": "DEFAULT TRUE"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "constraints": "DEFAULT CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "constraints": "DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    "api_endpoints": [
+      {
+        "endpoint": "/api/fcm/register",
+        "method": "POST",
+        "description": "Register FCM token for user",
+        "parameters": {
+          "fcm_token": "string",
+          "device_type": "string (optional)"
+        }
+      },
+      {
+        "endpoint": "/api/fcm/unregister",
+        "method": "POST",
+        "description": "Unregister FCM token for user",
+        "parameters": {
+          "fcm_token": "string"
+        }
+      },
+      {
+        "endpoint": "/api/notifications/settings",
+        "method": "GET",
+        "description": "Get user notification preferences"
+      },
+      {
+        "endpoint": "/api/notifications/settings",
+        "method": "POST",
+        "description": "Update user notification preferences",
+        "parameters": {
+          "outbid_notifications": "boolean",
+          "auction_ending_reminders": "boolean",
+          "auction_won_notifications": "boolean"
+        }
+      }
+    ]
+  },
+  "flutter_implementation": {
+    "new_files": [
+      {
+        "path": "lib/services/fcm_service.dart",
+        "description": "FCM service for handling push notifications",
+        "key_features": [
+          "Initialize FCM",
+          "Handle token refresh",
+          "Process incoming messages",
+          "Register/unregister tokens"
+        ]
+      },
+      {
+        "path": "lib/models/notification.dart",
+        "description": "Notification data model",
+        "properties": [
+          "id",
+          "type",
+          "title",
+          "body",
+          "data",
+          "createdAt",
+          "isRead"
+        ]
+      },
+      {
+        "path": "lib/providers/notification_provider.dart",
+        "description": "State management for notifications",
+        "features": [
+          "Manage notification list",
+          "Handle notification preferences",
+          "Mark notifications as read"
+        ]
+      },
+      {
+        "path": "lib/screens/notification_settings_screen.dart",
+        "description": "UI for notification preferences",
+        "components": [
+          "Toggle switches for notification types",
+          "Save preferences",
+          "Test notification button"
+        ]
+      },
+      {
+        "path": "lib/screens/notification_history_screen.dart",
+        "description": "UI for viewing notification history",
+        "components": [
+          "List of notifications",
+          "Filter by type",
+          "Mark as read functionality"
+        ]
+      }
+    ],
+    "modified_files": [
+      {
+        "path": "lib/providers/auth_provider.dart",
+        "changes": [
+          "Add FCM token registration methods",
+          "Handle token refresh on login/logout"
+        ]
+      },
+      {
+        "path": "lib/utils/api_service.dart",
+        "changes": [
+          "Add FCM token management endpoints",
+          "Add notification settings endpoints"
+        ]
+      },
+      {
+        "path": "lib/screens/main_screen.dart",
+        "changes": [
+          "Add notification badge to app bar",
+          "Add notification settings access"
+        ]
+      }
+    ]
+  },
+  "notification_types": [
+    {
+      "type": "outbid",
+      "title": "You've been outbid!",
+      "body_template": "Someone bid ${amount} on ${item_name}",
+      "data_fields": [
+        "auction_id",
+        "new_bid_amount",
+        "item_name",
+        "previous_bid_amount"
+      ],
+      "priority": "high"
+    },
+    {
+      "type": "auction_ending",
+      "title": "Auction ending soon!",
+      "body_template": "${item_name} ends in ${time_remaining}",
+      "data_fields": [
+        "auction_id",
+        "item_name",
+        "time_remaining",
+        "current_bid"
+      ],
+      "priority": "medium"
+    },
+    {
+      "type": "auction_won",
+      "title": "Congratulations! You won!",
+      "body_template": "You won ${item_name} for ${final_bid}",
+      "data_fields": [
+        "auction_id",
+        "item_name",
+        "final_bid",
+        "payment_deadline"
+      ],
+      "priority": "high"
+    }
+  ],
+  "backend_notification_logic": {
+    "outbid_detection": {
+      "trigger": "New bid placed",
+      "steps": [
+        "Check if new bid > previous highest bid",
+        "Identify previous highest bidder",
+        "Verify user has active FCM tokens",
+        "Send outbid notification",
+        "Log notification sent"
+      ]
+    },
+    "notification_service": {
+      "methods": [
+        {
+          "name": "sendOutbidNotification",
+          "parameters": ["auctionId", "outbidUserId", "newBidAmount"],
+          "description": "Send notification when user is outbid"
+        },
+        {
+          "name": "sendAuctionEndingNotification",
+          "parameters": ["auctionId", "userId", "timeRemaining"],
+          "description": "Send reminder when auction is ending"
+        },
+        {
+          "name": "sendAuctionWonNotification",
+          "parameters": ["auctionId", "userId", "finalBid"],
+          "description": "Send notification when user wins auction"
+        }
+      ]
+    }
+  },
+  "security_considerations": [
+    {
+      "aspect": "Token Validation",
+      "description": "Verify FCM tokens on backend before sending",
+      "implementation": "Validate token format and user ownership"
+    },
+    {
+      "aspect": "Rate Limiting",
+      "description": "Prevent notification spam",
+      "implementation": "Limit notifications per user per time period"
+    },
+    {
+      "aspect": "User Consent",
+      "description": "Respect notification preferences",
+      "implementation": "Check user settings before sending notifications"
+    },
+    {
+      "aspect": "Data Privacy",
+      "description": "Ensure notification data is secure",
+      "implementation": "Encrypt sensitive data in notifications"
+    }
+  ],
+  "testing_strategy": {
+    "unit_tests": [
+      "Test notification parsing",
+      "Test FCM token validation",
+      "Test notification preferences"
+    ],
+    "integration_tests": [
+      "Test FCM token registration",
+      "Test notification sending",
+      "Test backend notification logic"
+    ],
+    "e2e_tests": [
+      "Test complete outbid notification flow",
+      "Test notification settings updates",
+      "Test notification history"
+    ],
+    "performance_tests": [
+      "Test notification impact on app performance",
+      "Test background notification handling",
+      "Test multiple concurrent notifications"
+    ]
+  },
+  "additional_features": {
+    "smart_notifications": [
+      {
+        "feature": "Significant Outbid Filter",
+        "description": "Only notify for outbids >10% increase",
+        "implementation": "Calculate percentage increase before sending"
+      },
+      {
+        "feature": "Time-based Limits",
+        "description": "Limit notifications per hour",
+        "implementation": "Track notification frequency per user"
+      },
+      {
+        "feature": "User Preference Respect",
+        "description": "Honor user notification settings",
+        "implementation": "Check preferences before sending"
+      }
+    ],
+    "rich_notifications": [
+      {
+        "feature": "Auction Item Images",
+        "description": "Include item image in notification",
+        "implementation": "Add image URL to notification data"
+      },
+      {
+        "feature": "Quick Action Buttons",
+        "description": "View Auction, Place Bid buttons",
+        "implementation": "Use notification actions"
+      },
+      {
+        "feature": "Deep Linking",
+        "description": "Navigate to specific auction",
+        "implementation": "Add auction_id to notification data"
+      }
+    ],
+    "analytics": [
+      {
+        "metric": "Notification Open Rate",
+        "description": "Track how many notifications are opened",
+        "implementation": "Log notification interactions"
+      },
+      {
+        "metric": "User Engagement",
+        "description": "Track user actions after notifications",
+        "implementation": "Monitor bid placement after outbid notifications"
+      },
+      {
+        "metric": "A/B Testing",
+        "description": "Test different notification content",
+        "implementation": "Randomize notification messages"
+      }
+    ]
+  },
+  "deployment_checklist": [
+    "Configure Firebase project",
+    "Add google-services.json to Android",
+    "Add GoogleService-Info.plist to iOS",
+    "Update pubspec.yaml with dependencies",
+    "Implement FCM service",
+    "Add notification models",
+    "Create notification provider",
+    "Build notification UI screens",
+    "Update existing providers",
+    "Test on Android device",
+    "Test on iOS device",
+    "Test background notifications",
+    "Test notification preferences",
+    "Deploy backend changes",
+    "Monitor notification delivery",
+    "Gather user feedback"
+  ],
+  "estimated_timeline": {
+    "total_duration": "9-13 days",
+    "breakdown": {
+      "planning": "1 day",
+      "setup": "2-3 days",
+      "backend": "3-4 days",
+      "frontend": "2-3 days",
+      "testing": "2-3 days"
+    }
+  },
+  "risk_mitigation": [
+    {
+      "risk": "FCM token expiration",
+      "mitigation": "Implement token refresh logic"
+    },
+    {
+      "risk": "Notification spam",
+      "mitigation": "Implement rate limiting and user preferences"
+    },
+    {
+      "risk": "Performance impact",
+      "mitigation": "Optimize notification handling and background processing"
+    },
+    {
+      "risk": "User privacy concerns",
+      "mitigation": "Clear notification settings and opt-out options"
+    }
+  ]
+}

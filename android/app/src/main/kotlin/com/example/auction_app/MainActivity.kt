@@ -1,4 +1,4 @@
-package com.example.auction_app
+package com.greenmonday.bidder
 
 import io.flutter.embedding.android.FlutterActivity
 
